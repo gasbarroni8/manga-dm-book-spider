@@ -1,0 +1,20 @@
+{
+  "name": "neos55555",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "node ./server/index.js"
+  },
+  "author": "neos55555",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bufferhelper": "^0.2.1",
+    "cheerio": "^1.0.0-rc.5",
+    "encoding": "^0.1.13",
+    "express": "^4.17.1",
+    "iconv-lite": "^0.6.2",
+    "superagent": "^6.1.0",
+    "superagent-charset": "^1.2.0"
+  }
+}
