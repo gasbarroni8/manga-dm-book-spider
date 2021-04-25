@@ -99,11 +99,7 @@ readAllDirectory(subWindowPath).then((list) => {
 
     comEvtsMap[showType] = comEvts
   })
-  emitComEvts(comEvtsMap)
-})
-
-function emitComEvts(comEvtsMap) {
-  // 编写接口
+  // emitComEvts(comEvtsMap)
   app.post('/sub/:showType/:action', (req, res) => {
     const { showType, action } = req.params
     const comEvts = comEvtsMap[showType]
@@ -123,7 +119,7 @@ function emitComEvts(comEvtsMap) {
       res.json(result)
     }
   })
-}
+})
 
 app.listen(port)
 console.log('listen...', port)
