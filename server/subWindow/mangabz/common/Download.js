@@ -23,6 +23,7 @@ let {
   userAgent,
   showType,
 } = require('./function.js')
+// const { MANGABZ } = require(path.resolve(process.env.MAIN_DIR,'./constant'))
 // const fs = require('fs');
 
 const timeout = 25000 // 响应超时的时间
@@ -62,16 +63,19 @@ class Download extends AllDownload {
 
     for (let i = $as.length; i--; ) {
       const $item = $as.eq(i)
-      let title = escapeSpecChart($item.text().replace(/\s|(（.+）)/gi, ''))
+      let showTitle = $item.text().replace(/\s|(（.+）)/gi, '')
+      let title = escapeSpecChart(showTitle)
       if (map[title] !== undefined) {
         map[title]++
         title += map[title]
       } else {
         map[title] = 0
       }
+      showTitle = showTitle === title ? undefined : showTitle
       list.push({
         url: $item.attr('href'),
         title,
+        showTitle,
         maxPageCount: parseInt(
           $item.find('span').text().replace(/（|）/gi, '')
         ),

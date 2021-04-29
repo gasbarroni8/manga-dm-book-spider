@@ -4,7 +4,7 @@ const INTERVAL_TIME = 300
 
 class Store {
   constructor() {
-    this.storePath = path.resolve(__dirname, '../config.json')
+    this.storePath = path.resolve(__dirname, '../../config.json')
     this.data = this.getFileData()
     this.prevTimeSnapShot = 0
   }

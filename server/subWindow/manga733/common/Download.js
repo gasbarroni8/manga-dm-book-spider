@@ -12,7 +12,12 @@ const {
   suagent,
   trans,
   execParams,
+  forEachRerverse$list,
   getRand,
+  deTransUrlId,
+  getIdByLastItem,
+  forEach$list,
+  transUrlId,
 } = require('../../../lib')
 let {
   getMgOutput,
@@ -21,6 +26,9 @@ let {
   deleteMgData,
   showType,
 } = require('./function.js')
+
+const { getImgList } = require('./base64')
+
 const { HOST } = require('./comData')
 
 class Download extends AllDownload {
@@ -33,8 +41,9 @@ class Download extends AllDownload {
     this.deleteMgData = deleteMgData
     this.getMgOutput = getMgOutput
     // this.folderName = getMgData([this.id, 'extend1'])
-    this.getListUrl = HOST + '/comic/' + this.id + '/'
+    this.getListUrl = HOST + '/' + deTransUrlId(this.id) + '/'
     // this.isApp = true;
+    // this.isgbk = true
   }
 
   downLackByListCb(pageIndex, lackMgIndex) {
@@ -43,18 +52,19 @@ class Download extends AllDownload {
 
   // 解析列表并返回
   execList(text) {
-    const that = this
-
     const $ = cheerio.load(text)
 
     // const name = escapeSpecChart($('.book_newtitle').text());
     const list = []
-    const $as = $('#chapterList').find('.item')
+    const $as = $('#mh-chapter-list-ol-0').find('li')
     const map = {}
 
     for (let i = $as.length; i--; ) {
-      const $item = $as.eq(i)
-      let showTitle = $item.text().replace(/\s|(（.+）)/gi, '')
+      const $item = $as.eq(i).find('a')
+      let showTitle = $item
+        .find('p')
+        .text()
+        .replace(/\s|(（.+）)/gi, '')
       let title = escapeSpecChart(showTitle)
       if (map[title] !== undefined) {
         map[title]++
@@ -64,7 +74,7 @@ class Download extends AllDownload {
       }
       showTitle = showTitle === title ? undefined : showTitle
       list.push({
-        url: $item.attr('data-id'),
+        url: getIdByLastItem($item.attr('href')),
         title,
         showTitle,
         // maxPageCount: parseInt($item.find('span').text().replace(/（|）/ig, ''))
@@ -88,7 +98,7 @@ class Download extends AllDownload {
     })
   }
   getPicList(urlAsId) {
-    const urlpath = this.getListUrl + urlAsId + '.html'
+    const urlpath = this.getListUrl + urlAsId
 
     return suagent(urlpath, {
       setMap: {
@@ -96,16 +106,28 @@ class Download extends AllDownload {
       },
     }).then(({ text }) => {
       const $ = cheerio.load(text)
-      var html = $('.comiclist').find('script').html()
 
-      const res =
-        eval(
-          html
-            .replace(/\s|\n|_czc.push\(cnzz_comic\)/gi, '')
-            .match(/\(.+\)/g)[0]
-        ) || {}
+      var picListArr = []
+      forEach$list($('script'), ($s) => {
+        let html = $s.html()
+        if (html.indexOf('var qTcms_S_m_murl_e') != -1) {
+          // var qTcms_S_m_murl_e = ''
+          // console.log(html)
+          // eval(html)
+          // console.log(qTcms_S_m_murl_e)
+          var obj = execParams(html)
+          picListArr = getImgList(
+            obj.qTcms_S_m_murl_e,
+            obj.qTcms_S_m_id,
+            obj.qTcms_S_p_id
+          )
+          console.log(picListArr)
+          return false
+        }
+      })
+
       // console.log(res)
-      return res.chapter_list_all || []
+      return picListArr
     })
   }
 

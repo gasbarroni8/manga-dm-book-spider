@@ -106,7 +106,7 @@ class Download extends AllDownload {
           selfmkdir(filepath)
 
           that.errorCount = 0
-          saveTxt(filepath + `/1.txt`, ctnText).then(() => {
+          saveTxt(filepath + '/1.txt', ctnText).then(() => {
             that.onSaveSuccess &&
               that.onSaveSuccess.call(that, ++that.downloaded)
             // that.setPageOver(pageIndex, true)

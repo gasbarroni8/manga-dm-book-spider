@@ -61,16 +61,19 @@ class Download extends AllDownload {
 
     for (let i = $as.length; i--; ) {
       const $item = $as.eq(i).find('a')
-      let title = escapeSpecChart($item.text().replace(/\s|(（.+）)/gi, ''))
+      let showTitle = $item.text().replace(/\s|(（.+）)/gi, '')
+      let title = escapeSpecChart(showTitle)
       if (map[title] !== undefined) {
         map[title]++
         title += map[title]
       } else {
         map[title] = 0
       }
+      showTitle = showTitle === title ? undefined : showTitle
       list.push({
         url: $item.attr('href').replace(/\//gi, ''),
         title,
+        showTitle,
         isUnknowPageTotal: true, // 这里是用来告诉后台，当前页面的总数是不确定的
         // maxPageCount: parseInt($item.find('span').text().replace(/（|）/ig, ''))
       })
@@ -158,14 +161,16 @@ class Download extends AllDownload {
                   // this.delConfigListItem(pageIndex, 'prevDownload')
                 }
                 // 如果多个漫画下载的话，会造成文件大量读取，而报错
-                this.saveMgPic(mhpicurl, dirpath, mgIndex).then((res) => {
-                  if (++maxStoreCount >= 2 && maxBzSize == null) {
-                    // 用这个来缓冲，如果总数已经出来，那么就说明上面已经设置过了
-                    maxStoreCount = 0
-                    this.setConfigListItem(pageIndex, 'maxPageCount', mgIndex)
+                this.saveMgPic(mhpicurl, dirpath, pageIndex, mgIndex).then(
+                  (res) => {
+                    if (++maxStoreCount >= 2 && maxBzSize == null) {
+                      // 用这个来缓冲，如果总数已经出来，那么就说明上面已经设置过了
+                      maxStoreCount = 0
+                      this.setConfigListItem(pageIndex, 'maxPageCount', mgIndex)
+                    }
+                    next()
                   }
-                  next()
-                })
+                )
                 // }
               })
               .catch((err) => {
@@ -192,7 +197,7 @@ class Download extends AllDownload {
       })
     })
   }
-  saveMgPic(mhpicurl, dirpath, mgIndex) {
+  saveMgPic(mhpicurl, dirpath, pageIndex, mgIndex) {
     const that = this
     selfmkdir(dirpath)
     return new Promise((resolve) => {

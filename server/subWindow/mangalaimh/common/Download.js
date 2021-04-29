@@ -61,16 +61,19 @@ class Download extends AllDownload {
 
     for (let i = $as.length; i--; ) {
       const $item = $as.eq(i).find('a')
-      let title = escapeSpecChart($item.text().replace(/\s|(（.+）)/gi, ''))
+      let showTitle = $item.text().replace(/\s|(（.+）)/gi, '')
+      let title = escapeSpecChart(showTitle)
       if (map[title] !== undefined) {
         map[title]++
         title += map[title]
       } else {
         map[title] = 0
       }
+      showTitle = showTitle === title ? undefined : showTitle
       list.push({
         url: getIdByLastItem($item.attr('href')),
         title,
+        showTitle,
         // maxPageCount: parseInt($item.find('span').text().replace(/（|）/ig, ''))
       })
     }

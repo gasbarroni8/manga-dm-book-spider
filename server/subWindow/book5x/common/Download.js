@@ -78,7 +78,7 @@ class Download extends AllDownload {
           // return;
           // const txtUrl = `../static/txt2/${id}/${id+'_'+pageIndex}.txt`
           that.errorCount = 0
-          saveTxt(filepath + `/1.txt`, ctnText).then(() => {
+          saveTxt(filepath + '/1.txt', ctnText).then(() => {
             that.onSaveSuccess &&
               that.onSaveSuccess.call(that, ++that.downloaded)
             // that.setPageOver(pageIndex, true)
