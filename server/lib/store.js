@@ -46,7 +46,14 @@ class Store {
       this.prevTimeSnapShot = curTime
     }
   }
-  delete(args) {}
+  delete(args) {
+    let data = this.data
+    args.slice(0, args.length - 1).forEach((key) => {
+      data[key] = data[key] || {}
+      data = data[key]
+    })
+    delete data[args[args.length - 1]]
+  }
 }
 
 const store = new Store()
