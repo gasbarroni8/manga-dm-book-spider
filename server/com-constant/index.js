@@ -51,11 +51,11 @@ const MANGA_LIST_OBJ = [
     preOutput: 'MANGA_LAIMH',
     name: '来漫画',
   },
-  /* {
-    key: 'imanhua',
-    preOutput: 'MANGA_IMH',
-    name: 'iManga[中日]'
-  }, */
+  {
+    key: 'manga733',
+    preOutput: 'MANGA_733',
+    name: '733漫画(凑合)',
+  },
   {
     key: 'manhualangyu',
     preOutput: 'MANHUA_LANGYU',
